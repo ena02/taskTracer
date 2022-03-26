@@ -1,7 +1,7 @@
 package com.example.tasktracer.sort;
 
 
-import com.example.tasktracer.model.Status;
+import com.example.tasktracer.model.TaskStatus;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -13,7 +13,7 @@ import lombok.Setter;
 @Setter
 public class TaskSort {
     private String name;
-    private Status status;
+    private TaskStatus status;
     private String description;
     private Integer priority;
 }

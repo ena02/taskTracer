@@ -1,5 +1,6 @@
 package com.example.tasktracer.model;
 
+import com.example.tasktracer.service.TaskService;
 import lombok.*;
 
 import javax.persistence.*;
@@ -13,50 +14,32 @@ import java.io.Serializable;
 @Setter
 public class Task implements Serializable {
 
-    private Long id;
-    private String name;
-    private String description;
-    private Integer status;
-    private Integer priority;
-    private Project project;
-
-
-
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Id
     @Column(name = "id", nullable = false)
-    public Long getId() {
-        return id;
-    }
+    private Long id;
 
     @Basic
     @Column(name = "name")
-    public String getName() {
-        return name;
-    }
+    private String name;
 
     @Basic
     @Column(name = "description")
-    public String getDescription() {
-        return description;
-    }
+    private String description;
 
     @Basic
     @Column(name = "status")
-    public Integer getStatus() {
-        return status;
-    }
+    @Enumerated(EnumType.STRING)
+    private TaskStatus status;
 
     @Basic
     @Column(name = "priority")
-    public Integer getPriority() {
-        return priority;
-    }
-
+    private Integer priority;
 
     @ManyToOne
-    @JoinColumn(name = "project_id", referencedColumnName = "id", nullable = false)
-    public Project getProject() {
-        return project;
-    }
+    @JoinColumn(name = "project_id")
+    @Getter(AccessLevel.NONE)
+    private Project project;
+
+
 }

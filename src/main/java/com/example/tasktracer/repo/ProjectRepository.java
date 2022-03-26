@@ -15,4 +15,6 @@ public interface ProjectRepository extends JpaRepository<Project, Long> {
     @Query("SELECT t FROM Task t WHERE" +
             " t.project.id = :id")
     List<Task> findAllTasksByProjectId(@Param("id") Long id);
+
+
 }

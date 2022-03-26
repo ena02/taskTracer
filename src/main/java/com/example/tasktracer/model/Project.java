@@ -1,5 +1,6 @@
 package com.example.tasktracer.model;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -9,7 +10,6 @@ import javax.persistence.*;
 import java.io.Serializable;
 import java.util.Date;
 import java.util.List;
-import java.util.Set;
 
 @Entity
 @Table(name = "project")
@@ -18,49 +18,47 @@ import java.util.Set;
 @Setter
 @Getter
 public class Project implements Serializable {
-    private Long id;
-    private String name;
-    private Date startDate;
-    private Date completedDate;
-    private Integer currentStatus;
-    private Integer priority;
-
 
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Id
     @Column(name = "id", nullable = false)
-    public Long getId() {
-        return id;
-    }
+    private Long id;
 
     @Basic
     @Column(name = "name")
-    public String getName() {
-        return name;
-    }
+    private String name;
 
     @Basic
     @Column(name = "start_date")
-    public Date getStartDate() {
-        return startDate;
-    }
+    private Date startDate;
 
     @Basic
     @Column(name = "completed_date")
-    public Date getCompletedDate() {
-        return completedDate;
-    }
+    private Date completedDate;
 
     @Basic
     @Column(name = "current_status")
-    public Integer getCurrentStatus() {
-        return currentStatus;
-    }
+    @Enumerated(EnumType.STRING)
+    private ProjectStatus currentStatus;
 
     @Basic
     @Column(name = "priority")
-    public Integer getPriority() {
-        return priority;
-    }
+    private Integer priority;
 
+    @OneToMany(cascade = CascadeType.ALL)
+    @JoinColumn(name = "project_id")
+    private List<Task> tasks;
+
+
+    @Override
+    public String toString() {
+        return "Project{" +
+                "id=" + id +
+                ", name='" + name + '\'' +
+                ", startDate=" + startDate +
+                ", completedDate=" + completedDate +
+                ", currentStatus=" + currentStatus +
+                ", priority=" + priority +
+                '}';
+    }
 }
