@@ -1,10 +1,10 @@
 package com.example.tasktracer.model;
 
-import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import springfox.documentation.annotations.ApiIgnore;
 
 import javax.persistence.*;
 import java.io.Serializable;
@@ -17,6 +17,7 @@ import java.util.List;
 @EqualsAndHashCode
 @Setter
 @Getter
+@ApiIgnore
 public class Project implements Serializable {
 
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -49,16 +50,4 @@ public class Project implements Serializable {
     @JoinColumn(name = "project_id")
     private List<Task> tasks;
 
-
-    @Override
-    public String toString() {
-        return "Project{" +
-                "id=" + id +
-                ", name='" + name + '\'' +
-                ", startDate=" + startDate +
-                ", completedDate=" + completedDate +
-                ", currentStatus=" + currentStatus +
-                ", priority=" + priority +
-                '}';
-    }
 }

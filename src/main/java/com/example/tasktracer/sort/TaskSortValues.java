@@ -1,7 +1,6 @@
 package com.example.tasktracer.sort;
 
 
-import com.example.tasktracer.model.TaskStatus;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;

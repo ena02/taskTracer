@@ -5,6 +5,8 @@ import com.example.tasktracer.model.Task;
 import com.example.tasktracer.service.ProjectService;
 import com.example.tasktracer.service.TaskService;
 import com.example.tasktracer.sort.ProjectSortValues;
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiOperation;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -18,25 +20,33 @@ import java.util.NoSuchElementException;
 
 @RestController
 @RequestMapping("/project")
+@Api("Project controller")
 public class ProjectController {
 
+    // access to BD data
     private ProjectService projectService;
     private TaskService taskService;
 
+
+    // automatic insertion of an instance of a class through the constructor
     public ProjectController(ProjectService projectService, TaskService taskService) {
         this.projectService = projectService;
         this.taskService = taskService;
     }
 
+
     @GetMapping("/all")
+    @ApiOperation("Getting a project list")
     public List<Project> findAll() {
         return projectService.findAll();
     }
 
 
-    @PostMapping("/create")
-    public ResponseEntity<Project> create(@RequestBody Project project) {
+    @PostMapping("/add")
+    @ApiOperation("Add a new project")
+    public ResponseEntity<Project> add(@RequestBody Project project) {
 
+        // check for mandatory parameters
         if (project.getId() != null && project.getId() != 0) {
             return new ResponseEntity("redundant param: id MUST be null", HttpStatus.NOT_ACCEPTABLE);
         }
@@ -47,9 +57,10 @@ public class ProjectController {
     }
 
     @PutMapping("/update")
+    @ApiOperation("Upgrade an existing project")
     public ResponseEntity update(@RequestBody Project project) {
 
-
+        // check for mandatory parameters
         if (project.getId() == null && project.getId() == 0) {
             return new ResponseEntity("id can not be null", HttpStatus.NOT_ACCEPTABLE);
         }
@@ -61,23 +72,25 @@ public class ProjectController {
     }
 
 
-    @GetMapping("/id/{id}")
+    @GetMapping("/findById/{id}")
+    @ApiOperation("Get project by id")
     public ResponseEntity<Project> findById(@PathVariable Long id) {
 
 
-        Project category = null;
+        Project project  = null;
 
         try {
-            category = projectService.findById(id);
+            project = projectService.findById(id);
         } catch (NoSuchElementException e) {
             e.printStackTrace();
             return new ResponseEntity(String.format("id=%d not found", id), HttpStatus.NOT_ACCEPTABLE);
         }
 
-        return ResponseEntity.ok(category);
+        return ResponseEntity.ok(project);
     }
 
     @DeleteMapping("/delete/{id}")
+    @ApiOperation("Delete project by id")
     public ResponseEntity<String> deleteById(@PathVariable Long id) {
 
         try {
@@ -90,12 +103,14 @@ public class ProjectController {
     }
 
     @GetMapping("/allTasks/{id}")
+    @ApiOperation("Get tasks by project id")
     public List<Task> findAllTasks(@PathVariable Long id) {
         return projectService.findAllTasksByProjectId(id);
     }
 
 
     @PostMapping("/addTask/{id}")
+    @ApiOperation("Add task to project")
     public ResponseEntity<List<Task>> addTask(@PathVariable Long id, @RequestBody Task task) {
 
         if (task.getId() != null && task.getId() != 0) {
@@ -110,6 +125,7 @@ public class ProjectController {
 
 
     @DeleteMapping("/deleteTask/{taskId}")
+    @ApiOperation("Delete task by task id in project")
     public ResponseEntity<String> deleteTaskById(@PathVariable Long taskId) {
 
         try {
@@ -121,7 +137,11 @@ public class ProjectController {
         return new ResponseEntity(HttpStatus.OK);
     }
 
+
+    // sorting by any parameters
+    // ProjectSortValues contains all possible search options
     @PostMapping("/sort")
+    @ApiOperation("Get sorted project list")
     public ResponseEntity<List<Project>> sort(@RequestBody ProjectSortValues projectSortValues) {
 
         Integer pageNumber = projectSortValues.getPageNumber() != null ? projectSortValues.getPageNumber() : null;
@@ -132,12 +152,19 @@ public class ProjectController {
 
         Sort.Direction direction = sortDirection == null || sortDirection.trim().equals("asc") ? Sort.Direction.ASC : Sort.Direction.DESC;
 
+
+        // substitute all values
+
+        // sort object
         Sort sort = Sort.by(direction, sortColumn);
 
+        // pagination object
         PageRequest pageRequest = PageRequest.of(pageNumber, pageSize, sort);
 
+        // the result of the query with the page-by-page output
         Page result = projectService.sortedSearch(pageRequest);
 
+        // query result
         return ResponseEntity.ok(result.getContent());
     }
 }

@@ -1,6 +1,5 @@
 package com.example.tasktracer.service;
 
-import com.example.tasktracer.model.Project;
 import com.example.tasktracer.model.Task;
 import com.example.tasktracer.repo.TaskRepository;
 import org.springframework.data.domain.Page;

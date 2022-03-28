@@ -1,7 +1,7 @@
 package com.example.tasktracer.model;
 
-import com.example.tasktracer.service.TaskService;
 import lombok.*;
+import springfox.documentation.annotations.ApiIgnore;
 
 import javax.persistence.*;
 import java.io.Serializable;
@@ -12,6 +12,7 @@ import java.io.Serializable;
 @AllArgsConstructor
 @Getter
 @Setter
+@ApiIgnore
 public class Task implements Serializable {
 
     @GeneratedValue(strategy = GenerationType.IDENTITY)
