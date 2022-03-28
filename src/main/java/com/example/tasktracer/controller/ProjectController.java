@@ -4,7 +4,11 @@ import com.example.tasktracer.model.Project;
 import com.example.tasktracer.model.Task;
 import com.example.tasktracer.service.ProjectService;
 import com.example.tasktracer.service.TaskService;
+import com.example.tasktracer.sort.ProjectSortValues;
 import org.springframework.dao.EmptyResultDataAccessException;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -85,9 +89,9 @@ public class ProjectController {
         return new ResponseEntity(HttpStatus.OK);
     }
 
-    @GetMapping("/allTasks")
-    public List<Task> findAllTasks() {
-        return taskService.findAll();
+    @GetMapping("/allTasks/{id}")
+    public List<Task> findAllTasks(@PathVariable Long id) {
+        return projectService.findAllTasksByProjectId(id);
     }
 
 
@@ -117,5 +121,23 @@ public class ProjectController {
         return new ResponseEntity(HttpStatus.OK);
     }
 
+    @PostMapping("/sort")
+    public ResponseEntity<List<Project>> sort(@RequestBody ProjectSortValues projectSortValues) {
 
+        Integer pageNumber = projectSortValues.getPageNumber() != null ? projectSortValues.getPageNumber() : null;
+        Integer pageSize = projectSortValues.getPageSize() != null ? projectSortValues.getPageSize() : null;
+
+        String sortColumn = projectSortValues.getSortColumn() != null ? projectSortValues.getSortColumn() : null;
+        String sortDirection = projectSortValues.getSortDirection() != null ? projectSortValues.getSortDirection() : null;
+
+        Sort.Direction direction = sortDirection == null || sortDirection.trim().equals("asc") ? Sort.Direction.ASC : Sort.Direction.DESC;
+
+        Sort sort = Sort.by(direction, sortColumn);
+
+        PageRequest pageRequest = PageRequest.of(pageNumber, pageSize, sort);
+
+        Page result = projectService.sortedSearch(pageRequest);
+
+        return ResponseEntity.ok(result.getContent());
+    }
 }

@@ -3,6 +3,8 @@ package com.example.tasktracer.service;
 import com.example.tasktracer.model.Project;
 import com.example.tasktracer.model.Task;
 import com.example.tasktracer.repo.ProjectRepository;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
@@ -41,4 +43,8 @@ public class ProjectService {
     public List<Task> findAllTasksByProjectId(Long id) {
         return projectRepository.findAllTasksByProjectId(id);
     }
+
+    public Page<Project> sortedSearch(Pageable pageable) {
+        return projectRepository.findAll(pageable);
+    };
 }

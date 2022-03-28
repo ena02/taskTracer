@@ -1,9 +1,15 @@
 package com.example.tasktracer.controller;
 
+import com.example.tasktracer.model.Project;
 import com.example.tasktracer.model.Task;
 import com.example.tasktracer.model.Task;
 import com.example.tasktracer.service.TaskService;
+import com.example.tasktracer.sort.ProjectSortValues;
+import com.example.tasktracer.sort.TaskSortValues;
 import org.springframework.dao.EmptyResultDataAccessException;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -82,5 +88,24 @@ public class TaskController {
     }
 
 
+    @PostMapping("/sort")
+    public ResponseEntity<List<Task>> sort(@RequestBody TaskSortValues taskSortValues) {
+
+        Integer pageNumber = taskSortValues.getPageNumber() != null ? taskSortValues.getPageNumber() : null;
+        Integer pageSize = taskSortValues.getPageSize() != null ? taskSortValues.getPageSize() : null;
+
+        String sortColumn = taskSortValues.getSortColumn() != null ? taskSortValues.getSortColumn() : null;
+        String sortDirection = taskSortValues.getSortDirection() != null ? taskSortValues.getSortDirection() : null;
+
+        Sort.Direction direction = sortDirection == null || sortDirection.trim().equals("asc") ? Sort.Direction.ASC : Sort.Direction.DESC;
+
+        Sort sort = Sort.by(direction, sortColumn);
+
+        PageRequest pageRequest = PageRequest.of(pageNumber, pageSize, sort);
+
+        Page result = taskService.sortedSearch(pageRequest);
+
+        return ResponseEntity.ok(result.getContent());
+    }
     
 }

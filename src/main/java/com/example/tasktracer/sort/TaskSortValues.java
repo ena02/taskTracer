@@ -11,9 +11,11 @@ import lombok.Setter;
 @AllArgsConstructor
 @Getter
 @Setter
-public class TaskSort {
-    private String name;
-    private TaskStatus status;
-    private String description;
-    private Integer priority;
+public class TaskSortValues {
+    
+    private Integer pageNumber;
+    private Integer pageSize;
+
+    private String sortColumn;
+    private String sortDirection;
 }
